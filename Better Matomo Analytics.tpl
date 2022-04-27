@@ -25,84 +25,6 @@ ___TEMPLATE_PARAMETERS___
 
 [
   {
-    "type": "TEXT",
-    "name": "instanceURL",
-    "displayName": "Instance URL",
-    "simpleValueType": true,
-    "valueHint": "https://stats.example.com/",
-    "help": "The address of your Matomo Web Analytics Suite account.",
-    "valueValidators": [
-      {
-        "type": "REGEX",
-        "args": [
-          "^https://.*"
-        ],
-        "errorMessage": "The URL must start with https://"
-      },
-      {
-        "type": "REGEX",
-        "args": [
-          ".*\\/$"
-        ],
-        "errorMessage": "The URL must end with a \"/\""
-      },
-      {
-        "type": "NON_EMPTY",
-        "errorMessage": "Please provide a valid instance URL"
-      }
-    ]
-  },
-  {
-    "type": "TEXT",
-    "name": "websiteID",
-    "displayName": "Site ID",
-    "simpleValueType": true,
-    "valueHint": "1",
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      }
-    ],
-    "help": "The unique ID for your site in Matomo Web Analytics."
-  },
-  {
-    "type": "TEXT",
-    "name": "analyticsDomains",
-    "displayName": "Analytics domains",
-    "simpleValueType": true,
-    "help": "The domain(s) tracked by Matomo Web Analytics code. If necessary, add multiple domains separated by coma. Adding multiple domains will enable cross domain options. They need to start with \"http://\" or \"https://\".",
-    "valueHint": "https://example.com",
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY",
-        "errorMessage": "Please enter one or more full URLs"
-      },
-      {
-        "type": "TABLE_ROW_COUNT",
-        "args": [
-          1,
-          32
-        ]
-      },
-      {
-        "type": "REGEX",
-        "args": [
-          "^https?://.*"
-        ],
-        "errorMessage": "The domains need to start with http:// or https://",
-        "enablingConditions": []
-      },
-      {
-        "type": "REGEX",
-        "args": [
-          "^((?!,).)*$"
-        ],
-        "errorMessage": "Please specify the domains without commas"
-      }
-    ],
-    "lineCount": 1
-  },
-  {
     "type": "SELECT",
     "name": "tagAction",
     "displayName": "Tag Action",
@@ -159,7 +81,7 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "TEXT",
     "name": "goalRevenue",
-    "displayName": "Goal ID",
+    "displayName": "Goal revenue",
     "simpleValueType": true,
     "valueValidators": [
       {
@@ -178,37 +100,152 @@ ___TEMPLATE_PARAMETERS___
     ]
   },
   {
+    "type": "SELECT",
+    "name": "setConfigVariable",
+    "displayName": "Config variable",
+    "macrosInSelect": true,
+    "selectItems": [
+      {
+        "value": "manual",
+        "displayValue": "Manual config"
+      }
+    ],
+    "simpleValueType": true,
+    "alwaysInSummary": true,
+    "valueValidators": [
+      {
+        "type": "NON_EMPTY"
+      },
+      {
+        "type": "NON_EMPTY"
+      }
+    ],
+    "help": "Use a config variable or manually set the information the tag needs.",
+    "defaultValue": "manual"
+  },
+  {
+    "type": "CHECKBOX",
+    "name": "setManualOverride",
+    "checkboxText": "Change config manually",
+    "simpleValueType": true,
+    "displayName": "Check this if you want to specify certain config settings manually",
+    "defaultValue": false,
+    "enablingConditions": [
+      {
+        "paramName": "setConfigVariable",
+        "paramValue": "manual",
+        "type": "NOT_EQUALS"
+      }
+    ]
+  },
+  {
+    "type": "TEXT",
+    "name": "instanceURL",
+    "displayName": "Instance URL",
+    "simpleValueType": true,
+    "valueHint": "inherited by config variable",
+    "help": "The address of your Matomo Web Analytics Suite account.",
+    "valueValidators": [
+      {
+        "type": "REGEX",
+        "args": [
+          "^(https://.*\\/)|\\s*$"
+        ],
+        "errorMessage": "The URL must start with https://"
+      },
+      {
+        "type": "NON_EMPTY",
+        "errorMessage": "Please provide a valid instance URL"
+      }
+    ],
+    "enablingConditions": [
+      {
+        "paramName": "setManualOverride",
+        "paramValue": true,
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "setConfigVariable",
+        "paramValue": "manual",
+        "type": "EQUALS"
+      }
+    ]
+  },
+  {
+    "type": "TEXT",
+    "name": "websiteID",
+    "displayName": "Site ID",
+    "simpleValueType": true,
+    "valueHint": "inherited by config variable",
+    "valueValidators": [
+      {
+        "type": "NON_EMPTY"
+      }
+    ],
+    "help": "The unique ID for your site in Matomo Web Analytics.",
+    "enablingConditions": [
+      {
+        "paramName": "setManualOverride",
+        "paramValue": true,
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "setConfigVariable",
+        "paramValue": "manual",
+        "type": "EQUALS"
+      }
+    ],
+    "defaultValue": "inherited by config variable"
+  },
+  {
+    "type": "TEXT",
+    "name": "analyticsDomains",
+    "displayName": "Analytics domains",
+    "simpleValueType": true,
+    "help": "The domain(s) tracked by Matomo Web Analytics code. If necessary, add multiple domains separated by coma. Adding multiple domains will enable cross domain options. They need to start with \"http://\" or \"https://\".",
+    "valueHint": "inherited by config variable",
+    "valueValidators": [
+      {
+        "type": "NON_EMPTY",
+        "errorMessage": "Please enter one or more full URLs"
+      },
+      {
+        "type": "REGEX",
+        "args": [
+          "^https?://.*"
+        ],
+        "errorMessage": "The domains need to start with http:// or https://",
+        "enablingConditions": []
+      },
+      {
+        "type": "REGEX",
+        "args": [
+          "^((?!,).)*$"
+        ],
+        "errorMessage": "Please specify the domains without commas"
+      }
+    ],
+    "lineCount": 1,
+    "enablingConditions": [
+      {
+        "paramName": "setManualOverride",
+        "paramValue": true,
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "setConfigVariable",
+        "paramValue": "manual",
+        "type": "EQUALS"
+      }
+    ],
+    "defaultValue": "inherited by config variable"
+  },
+  {
     "type": "GROUP",
     "name": "dataCollectionSettings",
     "displayName": "Data collection",
     "groupStyle": "ZIPPY_CLOSED",
     "subParams": [
-      {
-        "type": "CHECKBOX",
-        "name": "setUserID",
-        "checkboxText": "Set a user ID",
-        "simpleValueType": true,
-        "help": "If turned on, you\u0027ll recognize visitors by their user ID. A user ID can be a visitor\u0027s email, username or some other unique identifier. We store IDs under the dimension called user ID. You can use this dimension in custom reports, segments and filters."
-      },
-      {
-        "type": "TEXT",
-        "name": "userID",
-        "displayName": "User ID",
-        "simpleValueType": true,
-        "enablingConditions": [
-          {
-            "paramName": "setUserID",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ],
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY",
-            "errorMessage": "Please provide a User ID. You can use a variable that stores the information."
-          }
-        ]
-      },
       {
         "type": "CHECKBOX",
         "name": "enableLinkTracking",
@@ -260,75 +297,63 @@ ___TEMPLATE_PARAMETERS___
         "name": "setCookieDomain",
         "checkboxText": "Recognize a visitor across subdomains",
         "simpleValueType": true,
-        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID."
-      },
-      {
-        "type": "TEXT",
-        "name": "cookieDomain",
-        "displayName": "Store a cookie on this domain",
-        "simpleValueType": true,
-        "enablingConditions": [
+        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID.",
+        "subParams": [
           {
-            "paramName": "setCookieDomain",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ],
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY",
-            "errorMessage": "Please provide a valid URL. It can contain wildcards."
+            "type": "TEXT",
+            "name": "cookieDomain",
+            "displayName": "Store a cookie on this domain",
+            "simpleValueType": true,
+            "enablingConditions": [
+              {
+                "paramName": "setCookieDomain",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ],
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ]
           }
         ]
-      }
-    ],
-    "enablingConditions": [
-      {
-        "paramName": "tagAction",
-        "paramValue": "trackPageview",
-        "type": "EQUALS"
-      }
-    ]
-  },
-  {
-    "type": "GROUP",
-    "name": "privacySettings",
-    "displayName": "Privacy",
-    "groupStyle": "ZIPPY_CLOSED",
-    "subParams": [
-      {
-        "type": "RADIO",
-        "name": "cookieConsent",
-        "displayName": "Specify cookie consent method",
-        "radioItems": [
-          {
-            "value": "useGoogleConsentAPI",
-            "displayValue": "Use Google Consent API"
-          },
-          {
-            "value": "useCookieConsentGiven",
-            "displayValue": "Use Matomo cookie consent functions"
-          },
-          {
-            "value": "disableCookies",
-            "displayValue": "Disable visitor cookies"
-          }
-        ],
-        "simpleValueType": true,
-        "help": "Consent can be set using Google Consent API or using a custom variable\nIf cookies are disabled, no visitor cookies will be set even if consent was given.",
-        "defaultValue": "useGoogleConsentAPI"
       },
       {
-        "type": "TEXT",
-        "name": "CookieConsentGiven",
-        "displayName": "Cookie Consent Given Variable",
-        "simpleValueType": true,
-        "help": "variable should be \"true\" or \"false\"",
-        "enablingConditions": [
+        "type": "SIMPLE_TABLE",
+        "name": "fieldsToSet",
+        "displayName": "Fields to set",
+        "simpleTableColumns": [
           {
-            "paramName": "cookieConsent",
-            "paramValue": "useCookieConsentGiven",
-            "type": "EQUALS"
+            "defaultValue": "",
+            "displayName": "Field",
+            "name": "field",
+            "type": "SELECT",
+            "selectItems": [
+              {
+                "value": "page url",
+                "displayValue": "page_url"
+              },
+              {
+                "value": "page title",
+                "displayValue": "page_title"
+              },
+              {
+                "value": "page_referrer",
+                "displayValue": "Page referrer"
+              },
+              {
+                "value": "user_id",
+                "displayValue": "User id"
+              }
+            ],
+            "isUnique": true
+          },
+          {
+            "defaultValue": "",
+            "displayName": "Value",
+            "name": "value",
+            "type": "TEXT"
           }
         ],
         "valueValidators": [
@@ -336,199 +361,17 @@ ___TEMPLATE_PARAMETERS___
             "type": "NON_EMPTY"
           }
         ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "setSecureCookie",
-        "checkboxText": "Use secure cookies",
-        "simpleValueType": true,
-        "help": "If turned on, you’ll receive information from first-party cookies over a secure connection. Only websites with the HTTPS protocol will be able to access these cookies.",
-        "enablingConditions": [
-          {
-            "paramName": "cookieConsent",
-            "paramValue": "disableCookies",
-            "type": "NOT_EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "setVisitorCookieTimeout",
-        "checkboxText": "Remove the visitor cookie at custom time",
-        "simpleValueType": true,
-        "help": "The visitor cookie (_pk_id.*) is removed after 13 months by default. You can delete it at a different time.",
-        "enablingConditions": [
-          {
-            "paramName": "cookieConsent",
-            "paramValue": "disableCookies",
-            "type": "NOT_EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "SELECT",
-        "name": "visitorCookieTimeout",
-        "selectItems": [
-          {
-            "value": 300,
-            "displayValue": "5 minutes"
-          },
-          {
-            "value": 600,
-            "displayValue": "10 minutes"
-          },
-          {
-            "value": 900,
-            "displayValue": "15 minutes"
-          },
-          {
-            "value": 1800,
-            "displayValue": "30 minutes"
-          },
-          {
-            "value": 3600,
-            "displayValue": "1 hour"
-          },
-          {
-            "value": 86400,
-            "displayValue": "24 hours"
-          },
-          {
-            "value": 604800,
-            "displayValue": "1 week"
-          },
-          {
-            "value": 2419200,
-            "displayValue": "1 month"
-          },
-          {
-            "value": 14515200,
-            "displayValue": "6 months"
-          },
-          {
-            "value": 29030400,
-            "displayValue": "12 months"
-          },
-          {
-            "value": 58060800,
-            "displayValue": "24 months"
-          }
-        ],
-        "simpleValueType": true,
-        "enablingConditions": [
-          {
-            "paramName": "setVisitorCookieTimeout",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "setSessionCookieTimeout",
-        "checkboxText": "Remove the session cookie at custom time",
-        "simpleValueType": true,
-        "help": "The session cookie (_pk_ses.*) is removed after 30 minutes by default. You can delete it at a different time.",
-        "enablingConditions": [
-          {
-            "paramName": "cookieConsent",
-            "paramValue": "disableCookies",
-            "type": "NOT_EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "SELECT",
-        "name": "sessionCookieTimeout",
-        "selectItems": [
-          {
-            "value": 300,
-            "displayValue": "5 minutes"
-          },
-          {
-            "value": 600,
-            "displayValue": "10 minutes"
-          },
-          {
-            "value": 900,
-            "displayValue": "15 minutes"
-          },
-          {
-            "value": 1800,
-            "displayValue": "30 minutes"
-          },
-          {
-            "value": 3600,
-            "displayValue": "1 hour"
-          },
-          {
-            "value": 86400,
-            "displayValue": "24 hours"
-          },
-          {
-            "value": 604800,
-            "displayValue": "1 week"
-          },
-          {
-            "value": 2419200,
-            "displayValue": "1 month"
-          },
-          {
-            "value": 14515200,
-            "displayValue": "6 months"
-          },
-          {
-            "value": 29030400,
-            "displayValue": "12 months"
-          },
-          {
-            "value": 58060800,
-            "displayValue": "24 months"
-          }
-        ],
-        "simpleValueType": true,
-        "enablingConditions": [
-          {
-            "paramName": "setSessionCookieTimeout",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "GROUP",
-    "name": "otherOptions",
-    "displayName": "Other options",
-    "groupStyle": "ZIPPY_CLOSED",
-    "subParams": [
-      {
-        "type": "CHECKBOX",
-        "name": "enableJSErrorTracking",
-        "checkboxText": "Detect JavaScript errors",
-        "simpleValueType": true,
-        "help": "If turned on, you\u0027ll record all kinds of JavaScript errors on your website. The errors will be saved as custom events with the error type and the URL of the page where they occurred. You\u0027ll see them under Analytics \u003e Reports \u003e Custom events or if you create a custom report."
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "dontTrackPageViews",
-        "checkboxText": "Track page views manually",
-        "simpleValueType": true,
-        "help": "If turned on, you can use a virtual page view tag or custom JavaScript code to track page views manually."
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "useAlternativeCDNSource",
-        "checkboxText": "Use an alternative CDN Source",
-        "simpleValueType": true,
-        "help": "If turned on, the tracking code we use Cloudflare CDN instead of jsdelivr.net"
       }
     ],
     "enablingConditions": [
       {
-        "paramName": "tagAction",
-        "paramValue": "trackPageview",
+        "paramName": "setManualOverride",
+        "paramValue": true,
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "setConfigVariable",
+        "paramValue": "manual",
         "type": "EQUALS"
       }
     ]
@@ -930,6 +773,6 @@ setup: |2-
 
 ___NOTES___
 
-Created on 27/4/2022, 8:50:03
+Created on 27/4/2022, 11:16:03
 
 
