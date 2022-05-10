@@ -77,64 +77,10 @@ ___TEMPLATE_PARAMETERS___
     "subParams": [
       {
         "type": "CHECKBOX",
-        "name": "setCookieDomain",
-        "checkboxText": "Recognize a visitor across subdomains",
-        "simpleValueType": true,
-        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID.",
-        "subParams": [
-          {
-            "type": "TEXT",
-            "name": "Store a cookie on this domain",
-            "displayName": "Store a cookie on this domain",
-            "simpleValueType": true,
-            "enablingConditions": [
-              {
-                "paramName": "setCookieDomain",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ],
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "setUserID",
-        "checkboxText": "Set a user ID",
-        "simpleValueType": true,
-        "help": "If turned on, you\u0027ll recognize visitors by their user ID. A user ID can be a visitor\u0027s email, username or some other unique identifier. We store IDs under the dimension called user ID. You can use this dimension in custom reports, segments and filters.",
-        "subParams": [
-          {
-            "type": "TEXT",
-            "name": "userID",
-            "displayName": "User ID",
-            "simpleValueType": true,
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ],
-            "enablingConditions": [
-              {
-                "paramName": "setUserID",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
         "name": "enableLinkTracking",
         "checkboxText": "Outlinks and downloads",
         "simpleValueType": true,
-        "defaultValue": true,
+        "defaultValue": false,
         "help": "If turned on, you\u0027ll count outlinks and downloads. Outlinks are links that take the visitor outside your website. Downloads are links to all kind of files on your website. You\u0027ll see collected data under Analytics \u003e Reports \u003e Outlinks or Analytics \u003e Reports \u003e Downloads."
       },
       {
@@ -174,6 +120,74 @@ ___TEMPLATE_PARAMETERS___
         "checkboxText": "Count session time precisely",
         "simpleValueType": true,
         "help": "If turned on, you’ll measure the end of a session more accurately. Session time is the period between opening the first page and closing the last one, but it’s hard to know exactly when a visitor closes the last page. This option will send ping requests to check if a visitor is still on the last page."
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "setCookieDomain",
+        "checkboxText": "Recognize a visitor across subdomains",
+        "simpleValueType": true,
+        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID.",
+        "subParams": [
+          {
+            "type": "TEXT",
+            "name": "Store a cookie on this domain",
+            "displayName": "Store a cookie on this domain",
+            "simpleValueType": true,
+            "enablingConditions": [
+              {
+                "paramName": "setCookieDomain",
+                "paramValue": true,
+                "type": "EQUALS"
+              }
+            ],
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "SIMPLE_TABLE",
+        "name": "fieldsToSet",
+        "displayName": "Fields to set",
+        "simpleTableColumns": [
+          {
+            "defaultValue": "",
+            "displayName": "Field",
+            "name": "field",
+            "type": "SELECT",
+            "selectItems": [
+              {
+                "value": "page_url",
+                "displayValue": "Page URL"
+              },
+              {
+                "value": "page_title",
+                "displayValue": "Page title"
+              },
+              {
+                "value": "page_referrer",
+                "displayValue": "Page referrer"
+              },
+              {
+                "value": "user_id",
+                "displayValue": "User ID"
+              },
+              {
+                "value": "send_beacon",
+                "displayValue": "Use navigator.sendBeacon"
+              }
+            ]
+          },
+          {
+            "defaultValue": "",
+            "displayName": "Value",
+            "name": "value",
+            "type": "TEXT"
+          }
+        ]
       }
     ]
   },
@@ -215,7 +229,7 @@ ___TEMPLATE_PARAMETERS___
             "type": "NON_EMPTY"
           }
         ],
-        "help": "variable should be \"true\" or \"false\"",
+        "help": "variable should be \"true\" or \"false\" (as text).",
         "enablingConditions": [
           {
             "paramName": "cookieConsent",

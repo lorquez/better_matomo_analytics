@@ -55,324 +55,456 @@ ___TEMPLATE_PARAMETERS___
         "type": "NON_EMPTY"
       }
     ],
-    "defaultValue": "trackPageview"
-  },
-  {
-    "type": "TEXT",
-    "name": "goalId",
-    "displayName": "Goal ID",
-    "simpleValueType": true,
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      },
-      {
-        "type": "POSITIVE_NUMBER"
-      }
-    ],
-    "enablingConditions": [
-      {
-        "paramName": "tagAction",
-        "paramValue": "goalTracking",
-        "type": "EQUALS"
-      }
-    ]
-  },
-  {
-    "type": "TEXT",
-    "name": "goalRevenue",
-    "displayName": "Goal revenue",
-    "simpleValueType": true,
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      },
-      {
-        "type": "POSITIVE_NUMBER"
-      }
-    ],
-    "enablingConditions": [
-      {
-        "paramName": "tagAction",
-        "paramValue": "goalTracking",
-        "type": "EQUALS"
-      }
-    ]
-  },
-  {
-    "type": "SELECT",
-    "name": "setConfigVariable",
-    "displayName": "Config variable",
-    "macrosInSelect": true,
-    "selectItems": [
-      {
-        "value": "manual",
-        "displayValue": "Manual config"
-      }
-    ],
-    "simpleValueType": true,
-    "alwaysInSummary": true,
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      },
-      {
-        "type": "NON_EMPTY"
-      }
-    ],
-    "help": "Use a config variable or manually set the information the tag needs.",
-    "defaultValue": "manual"
-  },
-  {
-    "type": "CHECKBOX",
-    "name": "setManualOverride",
-    "checkboxText": "Change config manually",
-    "simpleValueType": true,
-    "displayName": "Check this if you want to specify certain config settings manually",
-    "defaultValue": false,
-    "enablingConditions": [
-      {
-        "paramName": "setConfigVariable",
-        "paramValue": "manual",
-        "type": "NOT_EQUALS"
-      }
-    ]
-  },
-  {
-    "type": "TEXT",
-    "name": "instanceURL",
-    "displayName": "Instance URL",
-    "simpleValueType": true,
-    "valueHint": "inherited by config variable",
-    "help": "The address of your Matomo Web Analytics Suite account.",
-    "valueValidators": [
-      {
-        "type": "REGEX",
-        "args": [
-          "^(https://.*\\/)|\\s*$"
-        ],
-        "errorMessage": "The URL must start with https://"
-      },
-      {
-        "type": "NON_EMPTY",
-        "errorMessage": "Please provide a valid instance URL"
-      }
-    ],
-    "enablingConditions": [
-      {
-        "paramName": "setManualOverride",
-        "paramValue": true,
-        "type": "EQUALS"
-      },
-      {
-        "paramName": "setConfigVariable",
-        "paramValue": "manual",
-        "type": "EQUALS"
-      }
-    ]
-  },
-  {
-    "type": "TEXT",
-    "name": "websiteID",
-    "displayName": "Site ID",
-    "simpleValueType": true,
-    "valueHint": "inherited by config variable",
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY"
-      }
-    ],
-    "help": "The unique ID for your site in Matomo Web Analytics.",
-    "enablingConditions": [
-      {
-        "paramName": "setManualOverride",
-        "paramValue": true,
-        "type": "EQUALS"
-      },
-      {
-        "paramName": "setConfigVariable",
-        "paramValue": "manual",
-        "type": "EQUALS"
-      }
-    ],
-    "defaultValue": "inherited by config variable"
-  },
-  {
-    "type": "TEXT",
-    "name": "analyticsDomains",
-    "displayName": "Analytics domains",
-    "simpleValueType": true,
-    "help": "The domain(s) tracked by Matomo Web Analytics code. If necessary, add multiple domains separated by coma. Adding multiple domains will enable cross domain options. They need to start with \"http://\" or \"https://\".",
-    "valueHint": "inherited by config variable",
-    "valueValidators": [
-      {
-        "type": "NON_EMPTY",
-        "errorMessage": "Please enter one or more full URLs"
-      },
-      {
-        "type": "REGEX",
-        "args": [
-          "^https?://.*"
-        ],
-        "errorMessage": "The domains need to start with http:// or https://",
-        "enablingConditions": []
-      },
-      {
-        "type": "REGEX",
-        "args": [
-          "^((?!,).)*$"
-        ],
-        "errorMessage": "Please specify the domains without commas"
-      }
-    ],
-    "lineCount": 1,
-    "enablingConditions": [
-      {
-        "paramName": "setManualOverride",
-        "paramValue": true,
-        "type": "EQUALS"
-      },
-      {
-        "paramName": "setConfigVariable",
-        "paramValue": "manual",
-        "type": "EQUALS"
-      }
-    ],
-    "defaultValue": "inherited by config variable"
-  },
-  {
-    "type": "GROUP",
-    "name": "dataCollectionSettings",
-    "displayName": "Data collection",
-    "groupStyle": "ZIPPY_CLOSED",
+    "defaultValue": "trackPageview",
     "subParams": [
       {
-        "type": "CHECKBOX",
-        "name": "enableLinkTracking",
-        "checkboxText": "Outlinks and downloads",
+        "type": "TEXT",
+        "name": "goalId",
+        "displayName": "Goal ID",
         "simpleValueType": true,
-        "help": "If turned on, you\u0027ll count outlinks and downloads. Outlinks are links that take the visitor outside your website. Downloads are links to all kind of files on your website. You\u0027ll see collected data under Analytics \u003e Reports \u003e Outlinks or Analytics \u003e Reports \u003e Downloads.",
-        "defaultValue": true
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "enableContentTracking",
-        "checkboxText": "Interactions with popups and content",
-        "simpleValueType": true,
-        "help": "If turned on, you\u0027ll count times when people see and interact with your popup or content. Impressions and interactions are counted for: (1) popups added under Tag Manager \u003e Tags \u003e Add new tag \u003e Custom popup, (2) content added under Tag Manager \u003e Tags \u003e Add new tag \u003e Custom content, (3) any page content you tag in your website\u0027s code.  You\u0027ll see collected data under Analytics \u003e Reports \u003e Content performance.",
-        "subParams": [
+        "valueValidators": [
           {
-            "type": "RADIO",
-            "name": "contentTrackingOptions",
-            "radioItems": [
-              {
-                "value": "trackAllContentImpressions",
-                "displayValue": "Content loads on the page"
-              },
-              {
-                "value": "trackVisibleContentImpressions",
-                "displayValue": "Visitor sees the content"
-              }
-            ],
-            "simpleValueType": true,
-            "enablingConditions": [
-              {
-                "paramName": "enableContentTracking",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "countSessionsPrecisely",
-        "checkboxText": "Count session time precisely",
-        "simpleValueType": true,
-        "help": "If turned on, you’ll measure the end of a session more accurately. Session time is the period between opening the first page and closing the last one, but it’s hard to know exactly when a visitor closes the last page. This option will send ping requests to check if a visitor is still on the last page."
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "setCookieDomain",
-        "checkboxText": "Recognize a visitor across subdomains",
-        "simpleValueType": true,
-        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID.",
-        "subParams": [
-          {
-            "type": "TEXT",
-            "name": "cookieDomain",
-            "displayName": "Store a cookie on this domain",
-            "simpleValueType": true,
-            "enablingConditions": [
-              {
-                "paramName": "setCookieDomain",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ],
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "SIMPLE_TABLE",
-        "name": "fieldsToSet",
-        "displayName": "Fields to set",
-        "simpleTableColumns": [
-          {
-            "defaultValue": "",
-            "displayName": "Field",
-            "name": "field",
-            "type": "SELECT",
-            "selectItems": [
-              {
-                "value": "page url",
-                "displayValue": "page_url"
-              },
-              {
-                "value": "page title",
-                "displayValue": "page_title"
-              },
-              {
-                "value": "page_referrer",
-                "displayValue": "Page referrer"
-              },
-              {
-                "value": "user_id",
-                "displayValue": "User id"
-              }
-            ],
-            "isUnique": true
+            "type": "NON_EMPTY"
           },
           {
-            "defaultValue": "",
-            "displayName": "Value",
-            "name": "value",
-            "type": "TEXT"
+            "type": "POSITIVE_NUMBER"
           }
         ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "goalTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "goalRevenue",
+        "displayName": "Goal revenue",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          },
+          {
+            "type": "POSITIVE_NUMBER"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "goalTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "eventCategory",
+        "displayName": "Event category",
+        "simpleValueType": true,
         "valueValidators": [
           {
             "type": "NON_EMPTY"
           }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "eventTracking",
+            "type": "EQUALS"
+          }
         ]
-      }
-    ],
-    "enablingConditions": [
-      {
-        "paramName": "setManualOverride",
-        "paramValue": true,
-        "type": "EQUALS"
       },
       {
-        "paramName": "setConfigVariable",
-        "paramValue": "manual",
-        "type": "EQUALS"
+        "type": "TEXT",
+        "name": "eventAction",
+        "displayName": "Event action",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "eventTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "eventLabel",
+        "displayName": "Event label",
+        "simpleValueType": true,
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "eventTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "eventValue",
+        "displayName": "Event value",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_NEGATIVE_NUMBER"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "eventTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "ecommerceTrackingCategory",
+        "displayName": "Ecommerce event",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "ecommerceTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "SELECT",
+        "name": "ecommPayload",
+        "displayName": "",
+        "macrosInSelect": false,
+        "selectItems": [
+          {
+            "value": "gaEcommObj",
+            "displayValue": "Use GA/GA4 ecommerce object"
+          },
+          {
+            "value": "ecommManual",
+            "displayValue": "Insert values manually"
+          }
+        ],
+        "simpleValueType": true,
+        "defaultValue": "gaEcommObj",
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "ecommerceTracking",
+            "type": "EQUALS"
+          }
+        ],
+        "subParams": [
+          {
+            "type": "TEXT",
+            "name": "ecommObj",
+            "displayName": "Ecommerce object",
+            "simpleValueType": true,
+            "enablingConditions": [
+              {
+                "paramName": "ecommPayload",
+                "paramValue": "gaEcommObj",
+                "type": "EQUALS"
+              }
+            ]
+          },
+          {
+            "type": "PARAM_TABLE",
+            "name": "ecommManObj",
+            "displayName": "",
+            "paramTableColumns": [
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "orderId",
+                  "displayName": "Transaction id",
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "productList",
+                  "displayName": "Product list",
+                  "simpleValueType": true,
+                  "valueValidators": [
+                    {
+                      "type": "NON_EMPTY"
+                    }
+                  ],
+                  "help": "This has to be a list of products with the following data: \n- productSKU\n- productName\n- productCategory\n- price"
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "grandTotal",
+                  "displayName": "Total value",
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "tax",
+                  "displayName": "Tax",
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "shipping",
+                  "displayName": "Shipping",
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              },
+              {
+                "param": {
+                  "type": "TEXT",
+                  "name": "discount",
+                  "displayName": "Discount",
+                  "simpleValueType": true
+                },
+                "isUnique": false
+              }
+            ],
+            "enablingConditions": [
+              {
+                "paramName": "ecommPayload",
+                "paramValue": "ecommManual",
+                "type": "EQUALS"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "GROUP",
+    "name": "varConfig",
+    "displayName": "Config",
+    "groupStyle": "ZIPPY_OPEN",
+    "subParams": [
+      {
+        "type": "SELECT",
+        "name": "setConfigVariable",
+        "displayName": "Config variable",
+        "macrosInSelect": true,
+        "selectItems": [
+          {
+            "value": "manual",
+            "displayValue": "Manual config"
+          }
+        ],
+        "simpleValueType": true,
+        "alwaysInSummary": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "help": "Use a config variable or manually set the information the tag needs.",
+        "defaultValue": "manual"
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "setManualOverride",
+        "checkboxText": "Change config manually",
+        "simpleValueType": true,
+        "displayName": "Check this if you want to specify certain config settings manually",
+        "defaultValue": false,
+        "enablingConditions": [
+          {
+            "paramName": "setConfigVariable",
+            "paramValue": "manual",
+            "type": "NOT_EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "instanceURL",
+        "displayName": "Instance URL",
+        "simpleValueType": true,
+        "valueHint": "inherited by config variable",
+        "help": "The address of your Matomo Web Analytics Suite account.",
+        "valueValidators": [
+          {
+            "type": "REGEX",
+            "args": [
+              "^(https://.*\\/)|\\s*$"
+            ],
+            "errorMessage": "The URL must start with https://"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          },
+          {
+            "paramName": "setConfigVariable",
+            "paramValue": "manual",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "websiteID",
+        "displayName": "Site ID",
+        "simpleValueType": true,
+        "valueHint": "inherited by config variable",
+        "help": "The unique ID for your site in Matomo Web Analytics.",
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          },
+          {
+            "paramName": "setConfigVariable",
+            "paramValue": "manual",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "analyticsDomains",
+        "displayName": "Analytics domains",
+        "simpleValueType": true,
+        "help": "The domain(s) tracked by Matomo Web Analytics code. If necessary, add multiple domains separated by coma. Adding multiple domains will enable cross domain options. They need to start with \"http://\" or \"https://\".",
+        "valueHint": "inherited by config variable",
+        "valueValidators": [
+          {
+            "type": "REGEX",
+            "args": [
+              "^https?://.*|\\s+"
+            ],
+            "errorMessage": "The domains need to start with http:// or https://",
+            "enablingConditions": []
+          },
+          {
+            "type": "REGEX",
+            "args": [
+              "^((?!,).)*$|\\s+"
+            ],
+            "errorMessage": "Please specify the domains without commas"
+          }
+        ],
+        "lineCount": 1,
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          },
+          {
+            "paramName": "setConfigVariable",
+            "paramValue": "manual",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "GROUP",
+        "name": "fieldsToSetSettings",
+        "displayName": "Fields to set",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "fieldsToSet",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Field",
+                "name": "field",
+                "type": "SELECT",
+                "selectItems": [
+                  {
+                    "value": "page_url",
+                    "displayValue": "Page URL"
+                  },
+                  {
+                    "value": "page_title",
+                    "displayValue": "Page title"
+                  },
+                  {
+                    "value": "page_referrer",
+                    "displayValue": "Page referrer"
+                  },
+                  {
+                    "value": "user_id",
+                    "displayValue": "User id"
+                  },
+                  {
+                    "value": "send_beacon",
+                    "displayValue": "Use navigator.sendBeacon"
+                  },
+                  {
+                    "value": "enableLinkTracking",
+                    "displayValue": "Track outlinks and downloads"
+                  },
+                  {
+                    "value": "enableContentTracking",
+                    "displayValue": "Interactions with popups and content"
+                  },
+                  {
+                    "value": "countSessionsPrecisely",
+                    "displayValue": "Count session time precisely"
+                  },
+                  {
+                    "value": "cookieDomain",
+                    "displayValue": "Set cookie domain"
+                  }
+                ],
+                "isUnique": true
+              },
+              {
+                "defaultValue": "",
+                "displayName": "Value",
+                "name": "value",
+                "type": "TEXT"
+              }
+            ]
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          },
+          {
+            "paramName": "setConfigVariable",
+            "paramValue": "manual",
+            "type": "EQUALS"
+          }
+        ]
       }
     ]
   }
@@ -381,11 +513,14 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
+const JSON = require('JSON');
 const log = require('logToConsole');
 const createQueue = require('createQueue');
 const injectScript = require('injectScript');
 const isConsentGranted = require('isConsentGranted');
 const addConsentListener = require('addConsentListener');
+
+log('Data:',data);
 
 // onSuccess, onFailure for launching the tracking code
 const onSuccess = () => {
@@ -403,21 +538,41 @@ let _matomo, jsTracker;
 
 _matomo = createQueue('_paq');
 
-if (data.instanceURL.slice(-1) !== '/') data.instanceURL += '/';
+// Check if on manual config
 
-if (data.matomoVersion == undefined || data.matomoVersion == "") data.matomoVersion = "4.9.0";
+var manual_config = (data.setConfigVariable=='manual' || data.setManualOverride);
 
-if (data.useAlternativeCDNSource == true) {
-  jsTracker = "https://cdn.jsdelivr.net/gh/matomo-org/matomo@"+data.matomoVersion+"/matomo.min.js";
+if (data.setConfigVariable!='manual'){
+  data.setConfigVariable = JSON.parse(data.setConfigVariable);
+}
+
+if (manual_config){
+  var instanceURL = (data.instanceURL!='' ? data.instanceURL : data.setConfigVariable.instanceURL);
+  var websiteID = (data.websiteID!='' ? data.websiteID : data.setConfigVariable.websiteID);
+  var analyticsDomains = (data.analyticsDomains!='' ? data.analyticsDomains : data.setConfigVariable.analyticsDomains);
+  var fieldsToSet = data.setConfigVariable.fieldsToSet;
+  for (var field in fieldsToSet){
+    if (data.fieldsToSet[field]) {
+      fieldsToSet[field] = data.fieldsToSet[field];
+    }
+  }
+}
+
+if (instanceURL.slice(-1) !== '/') instanceURL += '/';
+
+if (data.setConfigVariable.matomoVersion == undefined || data.setConfigVariable.matomoVersion == "") data.setConfigVariable.matomoVersion = "4.9.0";
+
+if (data.setConfigVariable.useAlternativeCDNSource == true) {
+  jsTracker = "https://cdn.jsdelivr.net/gh/matomo-org/matomo@"+data.setConfigVariable.matomoVersion+"/matomo.min.js";
 } else {
-  let scriptUrl = data.instanceURL.replace('://','-');
+  let scriptUrl = instanceURL.replace('://','-');
   jsTracker = "https://matomojs.trackify.info/" + scriptUrl + "matomo.js";
 }
 
 // Cookie timeouts for Matomo first-party cookies
 
 // Option to disable tracking cookies
-if (data.cookieConsent == "disableCookies") {
+if (data.setConfigVariable.cookieConsent == "disableCookies") {
   _matomo(['disableCookies']);
   log('disable Matomo Analytics Cookie.');
 } else {
@@ -426,32 +581,32 @@ if (data.cookieConsent == "disableCookies") {
   log('requireCookieConsent');
   
   // If the user granted tracking consent, set complete tracking
-  if ((data.cookieConsent=='useGoogleConsentAPI' && isConsentGranted('analytics_storage')) || (data.cookieConsent=='useCookieConsentGiven' && data.CookieConsentGiven=='true')){
+  if ((data.setConfigVariable.cookieConsent=='useGoogleConsentAPI' && isConsentGranted('analytics_storage')) || (data.setConfigVariable.cookieConsent=='useCookieConsentGiven' && data.setConfigVariable.CookieConsentGiven=='true')){
     _matomo(['setCookieConsentGiven']);
   } 
   
   // Set secure cookie
-  if (data.setSecureCookie == true) {
+  if (data.setConfigVariable.setSecureCookie == true) {
     _matomo(['setSecureCookie', 1]);
     log('Secure Cookies.');
   }
 
   // Visitor cookie timeout
-  if (data.setVisitorCookieTimeout == true) {
-    _matomo(['setVisitorCookieTimeout', data.visitorCookieTimeout]);
-    log('VisitorCookieTimeout '+data.visitorCookieTimeout);
+  if (data.setConfigVariable.setVisitorCookieTimeout == true) {
+    _matomo(['setVisitorCookieTimeout', data.setConfigVariable.visitorCookieTimeout]);
+    log('VisitorCookieTimeout '+data.setConfigVariable.visitorCookieTimeout);
   }
 
   // Session cookie timeout
-  if (data.setSessionCookieTimeout == true) {
-    _matomo(['setSessionCookieTimeout', data.sessionCookieTimeout]);
-    log('SessionCookieTimeout '+data.sessionCookieTimeout);
+  if (data.setConfigVariable.setSessionCookieTimeout == true) {
+    _matomo(['setSessionCookieTimeout', data.setConfigVariable.sessionCookieTimeout]);
+    log('SessionCookieTimeout '+data.setConfigVariable.sessionCookieTimeout);
   }
 
   // Referral cookie timeout
-  if (data.setReferralCookieTimeout == true) {
-    _matomo(['setReferralCookieTimeout', data.referralCookieTimeout]);
-    log('ReferralCookieTimeout '+data.referralCookieTimeout);
+  if (data.setConfigVariable.setReferralCookieTimeout == true) {
+    _matomo(['setReferralCookieTimeout', data.setConfigVariable.referralCookieTimeout]);
+    log('ReferralCookieTimeout '+data.setConfigVariable.referralCookieTimeout);
   }
 }
 
@@ -499,36 +654,36 @@ if (data.tagAction == 'ecommerceTracking') {
 
   // Sending tracking code options from values set in template input fields
   // Analytics domains
-  _matomo(['setDomains', data.analyticsDomains.split(',')]);
+  _matomo(['setDomains', analyticsDomains.split(',')]);
 
   // Cross-domain tracking
-  if (data.analyticsDomains.split(',').length > 1) {
+  if (analyticsDomains.split(',').length > 1) {
     _matomo(['enableCrossDomainLinking']);
   }
 
-  // Link tracking
-  if (data.enableLinkTracking == true) {
+  // Link tracking (active by default)
+  if (fieldsToSet.enableLinkTracking != 'false') {
     _matomo(["enableLinkTracking"]);
   }
 
   // Set cookie domain
-  if (data.setCookieDomain == true) {
-    _matomo(['setCookieDomain', data.cookieDomain]);
+  if (fieldsToSet.cookieDomain != '') {
+    _matomo(['setCookieDomain', fieldsToSet.cookieDomain]);
   }
 
   // Setting the User ID
-  if (data.setUserID == true) {
-    let userId = data.userID;
+  if (fieldsToSet.user_id) {
+    let userId = fieldsToSet.user_id;
     _matomo(['setUserId', userId]);
   }
 
-  // Heartbeat timer to accurately track session time
-  if (data.countSessionsPrecisely == true) {
+  // Heartbeat timer to accurately track session time (active by default)
+  if (fieldsToSet.countSessionsPrecisely != 'false') {
     _matomo(['enableHeartBeatTimer', 30]);
   }
 
   // Content tracking - track all impressions or only visible impressions
-  if (data.enableContentTracking == true) {
+  if (fieldsToSet.enableContentTracking == 'true') {
     if (data.contentTrackingOptions === "trackAllContentImpressions") {
       _matomo(["trackAllContentImpressions"]);
     } else if (data.contentTrackingOptions === "trackVisibleContentImpressions") {
@@ -552,10 +707,10 @@ if (data.tagAction == 'ecommerceTracking') {
 
 // After specifying the options, a function needs to run that specifies the tracking URL, website UUID
 // and injects the tracking code into <head>
-let trackerURL = data.instanceURL + "matomo.php";
+let trackerURL = instanceURL + "matomo.php";
 const injectTracker = jsTracker => {
   _matomo(["setTrackerUrl", trackerURL]);
-  _matomo(["setSiteId", data.websiteID]);
+  _matomo(["setSiteId", websiteID]);
 
   injectScript(jsTracker, onSuccess, onFailure, jsTracker);
 };
