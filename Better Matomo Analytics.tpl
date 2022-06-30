@@ -521,6 +521,7 @@ const isConsentGranted = require('isConsentGranted');
 const addConsentListener = require('addConsentListener');
 
 log('Data:',data);
+log('configVar:',data.setConfigVariable);
 
 // onSuccess, onFailure for launching the tracking code
 const onSuccess = () => {
@@ -533,6 +534,11 @@ const onFailure = () => {
   data.gtmOnFailure();
 };
 
+// Check if the wrong config var is being passed
+if (data.setConfigVariable!='manual' && !data.setConfigVariable.matomoCheck){
+  onFailure();
+}
+
 // Initialize tracker objects, Matomo Analytics queue
 let _matomo, jsTracker;
 
@@ -542,21 +548,20 @@ _matomo = createQueue('_paq');
 
 var manual_config = (data.setConfigVariable=='manual' || data.setManualOverride);
 
-if (data.setConfigVariable!='manual'){
-  data.setConfigVariable = JSON.parse(data.setConfigVariable);
-}
-
-if (manual_config){
-  var instanceURL = (data.instanceURL!='' ? data.instanceURL : data.setConfigVariable.instanceURL);
-  var websiteID = (data.websiteID!='' ? data.websiteID : data.setConfigVariable.websiteID);
-  var analyticsDomains = (data.analyticsDomains!='' ? data.analyticsDomains : data.setConfigVariable.analyticsDomains);
-  var fieldsToSet = data.setConfigVariable.fieldsToSet;
+// Overriding config var settings if specified in the tag
+var instanceURL = (manual_config && data.instanceURL!='' ? data.instanceURL : data.setConfigVariable.instanceURL);
+var websiteID = (manual_config && data.websiteID!='' ? data.websiteID : data.setConfigVariable.websiteID);
+var analyticsDomains = (manual_config && data.analyticsDomains!='' ? data.analyticsDomains : data.setConfigVariable.analyticsDomains);
+var fieldsToSet = (data.setConfigVariable=='manual' ? data.fieldsToSet : data.setConfigVariable.fieldsToSet);
+if (data.setManualOverride){
   for (var field in fieldsToSet){
     if (data.fieldsToSet[field]) {
       fieldsToSet[field] = data.fieldsToSet[field];
     }
   }
 }
+
+log('fieldsToSet:',fieldsToSet);
 
 if (instanceURL.slice(-1) !== '/') instanceURL += '/';
 
@@ -624,16 +629,13 @@ if (data.tagAction == 'ecommerceTracking') {
   let discount = data.discount;
   if (data.ecommerceTrackingCategory == 'setEcommerceView') {
     _matomo(['setEcommerceView', productSKU, productName, productCategory, price]);
-  } else
-    if (data.ecommerceTrackingCategory == 'addEcommerceItem') {
-      _matomo(['addEcommerceItem', productSKU, productName, productCategory, price, quantity]);
-    } else
-      if (data.ecommerceTrackingCategory == 'trackEcommerceOrder') {
-        _matomo(['trackEcommerceOrder', orderId, grandTotal, subTotal, tax, shipping, discount]);
-      } else
-        if (data.ecommerceTrackingCategory == 'removeEcommerceItem') {
-          _matomo(['removeEcommerceItem', productSKU]);
-        }
+  } else if (data.ecommerceTrackingCategory == 'addEcommerceItem') {
+    _matomo(['addEcommerceItem', productSKU, productName, productCategory, price, quantity]);
+  } else if (data.ecommerceTrackingCategory == 'trackEcommerceOrder') {
+    _matomo(['trackEcommerceOrder', orderId, grandTotal, subTotal, tax, shipping, discount]);
+  } else if (data.ecommerceTrackingCategory == 'removeEcommerceItem') {
+    _matomo(['removeEcommerceItem', productSKU]);
+  }
   if (grandTotal != null) {
     _matomo(['trackEcommerceCartUpdate', grandTotal]);
   }  
@@ -660,37 +662,37 @@ if (data.tagAction == 'ecommerceTracking') {
   if (analyticsDomains.split(',').length > 1) {
     _matomo(['enableCrossDomainLinking']);
   }
+  if (fieldsToSet){
+    // Link tracking (active by default)
+    if (fieldsToSet.enableLinkTracking) {
+      _matomo(["enableLinkTracking"]);
+    }
 
-  // Link tracking (active by default)
-  if (fieldsToSet.enableLinkTracking != 'false') {
-    _matomo(["enableLinkTracking"]);
-  }
+    // Set cookie domain
+    if (fieldsToSet.cookieDomain != '') {
+      _matomo(['setCookieDomain', fieldsToSet.cookieDomain]);
+    }
 
-  // Set cookie domain
-  if (fieldsToSet.cookieDomain != '') {
-    _matomo(['setCookieDomain', fieldsToSet.cookieDomain]);
-  }
+    // Setting the User ID
+    if (fieldsToSet.user_id) {
+      let userId = fieldsToSet.user_id;
+      _matomo(['setUserId', userId]);
+    }
 
-  // Setting the User ID
-  if (fieldsToSet.user_id) {
-    let userId = fieldsToSet.user_id;
-    _matomo(['setUserId', userId]);
-  }
+    // Heartbeat timer to accurately track session time (active by default)
+    if (fieldsToSet.countSessionsPrecisely != 'false') {
+      _matomo(['enableHeartBeatTimer', 30]);
+    }
 
-  // Heartbeat timer to accurately track session time (active by default)
-  if (fieldsToSet.countSessionsPrecisely != 'false') {
-    _matomo(['enableHeartBeatTimer', 30]);
-  }
-
-  // Content tracking - track all impressions or only visible impressions
-  if (fieldsToSet.enableContentTracking == 'true') {
-    if (data.contentTrackingOptions === "trackAllContentImpressions") {
-      _matomo(["trackAllContentImpressions"]);
-    } else if (data.contentTrackingOptions === "trackVisibleContentImpressions") {
-      _matomo(["trackVisibleContentImpressions"]);
+    // Content tracking - track all impressions or only visible impressions
+    if (fieldsToSet.enableContentTracking == 'true') {
+      if (data.contentTrackingOptions === "trackAllContentImpressions") {
+        _matomo(["trackAllContentImpressions"]);
+      } else if (data.contentTrackingOptions === "trackVisibleContentImpressions") {
+        _matomo(["trackVisibleContentImpressions"]);
+      }
     }
   }
-
   // Enable tracking JS errors as Custom Events for Analytics
   if (data.enableJSErrorTracking == true) {
     _matomo(['enableJSErrorTracking']);

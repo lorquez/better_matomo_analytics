@@ -6,7 +6,7 @@
   "version": 1,
   "securityGroups": [],
   "displayName": "Better Matomo Analytics config variable",
-  "description": "",
+  "description": "Configuration variables to carry over several settings to every tag that uses it.",
   "containerContexts": [
     "WEB"
   ]
@@ -435,6 +435,8 @@ ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 // Introduzca aquí su código de plantilla.
 const log = require('logToConsole');
 log('data =', data);
+
+data.matomoCheck=true;
 
 // Las variables deben devolver un valor.
 return data;
