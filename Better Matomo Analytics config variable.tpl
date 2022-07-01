@@ -122,33 +122,6 @@ ___TEMPLATE_PARAMETERS___
         "help": "If turned on, you’ll measure the end of a session more accurately. Session time is the period between opening the first page and closing the last one, but it’s hard to know exactly when a visitor closes the last page. This option will send ping requests to check if a visitor is still on the last page."
       },
       {
-        "type": "CHECKBOX",
-        "name": "setCookieDomain",
-        "checkboxText": "Recognize a visitor across subdomains",
-        "simpleValueType": true,
-        "help": "If turned on, the visitor who goes from one subdomain to the other will be recognized as the same visitor. Sessions that would be treated as separate for each subdomain, will be treated as one session. This option works only for subdomains that use the same tracking code. You need to pick a domain where you\u0027ll store a cookie with the visitor ID.",
-        "subParams": [
-          {
-            "type": "TEXT",
-            "name": "Store a cookie on this domain",
-            "displayName": "Store a cookie on this domain",
-            "simpleValueType": true,
-            "enablingConditions": [
-              {
-                "paramName": "setCookieDomain",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ],
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ]
-          }
-        ]
-      },
-      {
         "type": "SIMPLE_TABLE",
         "name": "fieldsToSet",
         "displayName": "Fields to set",
@@ -178,6 +151,22 @@ ___TEMPLATE_PARAMETERS___
               {
                 "value": "send_beacon",
                 "displayValue": "Use navigator.sendBeacon"
+              },
+              {
+                "value": "enableLinkTracking",
+                "displayValue": "Track outlinks and downloads"
+              },
+              {
+                "value": "enableContentTracking",
+                "displayValue": "Interactions with popups and content"
+              },
+              {
+                "value": "countSessionsPrecisely",
+                "displayValue": "Count session time precisely"
+              },
+              {
+                "value": "cookieDomain",
+                "displayValue": "Set cookie domain"
               }
             ]
           },
