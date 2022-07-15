@@ -35,16 +35,8 @@ ___TEMPLATE_PARAMETERS___
         "displayValue": "Pageview"
       },
       {
-        "value": "goalTracking",
-        "displayValue": "Goal"
-      },
-      {
         "value": "eventTracking",
         "displayValue": "Event"
-      },
-      {
-        "value": "ecommerceTracking",
-        "displayValue": "E-commerce"
       }
     ],
     "simpleValueType": true,
@@ -57,48 +49,6 @@ ___TEMPLATE_PARAMETERS___
     ],
     "defaultValue": "trackPageview",
     "subParams": [
-      {
-        "type": "TEXT",
-        "name": "goalId",
-        "displayName": "Goal ID",
-        "simpleValueType": true,
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          },
-          {
-            "type": "POSITIVE_NUMBER"
-          }
-        ],
-        "enablingConditions": [
-          {
-            "paramName": "tagAction",
-            "paramValue": "goalTracking",
-            "type": "EQUALS"
-          }
-        ]
-      },
-      {
-        "type": "TEXT",
-        "name": "goalRevenue",
-        "displayName": "Goal revenue",
-        "simpleValueType": true,
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          },
-          {
-            "type": "POSITIVE_NUMBER"
-          }
-        ],
-        "enablingConditions": [
-          {
-            "paramName": "tagAction",
-            "paramValue": "goalTracking",
-            "type": "EQUALS"
-          }
-        ]
-      },
       {
         "type": "TEXT",
         "name": "eventCategory",
@@ -167,6 +117,68 @@ ___TEMPLATE_PARAMETERS___
         ]
       },
       {
+        "type": "CHECKBOX",
+        "name": "isGoal",
+        "checkboxText": "Event is a goal",
+        "simpleValueType": true,
+        "help": "Tick this if the event or pageview being tagged is also a goal"
+      },
+      {
+        "type": "TEXT",
+        "name": "goalId",
+        "displayName": "Goal ID",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          },
+          {
+            "type": "POSITIVE_NUMBER"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "isGoal",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "TEXT",
+        "name": "goalRevenue",
+        "displayName": "Goal revenue",
+        "simpleValueType": true,
+        "valueValidators": [
+          {
+            "type": "POSITIVE_NUMBER"
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "isGoal",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ],
+        "valueHint": "Inherit from ecommerce or zero",
+        "help": "Leave blank to inherit from ecommerce or zero"
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "eventHasEcommerce",
+        "checkboxText": "Add ecommerce data",
+        "simpleValueType": true,
+        "help": "Tick to enable ecommerce options for this tag",
+        "enablingConditions": [
+          {
+            "paramName": "tagAction",
+            "paramValue": "eventTracking",
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
         "type": "TEXT",
         "name": "ecommerceTrackingCategory",
         "displayName": "Ecommerce event",
@@ -178,11 +190,12 @@ ___TEMPLATE_PARAMETERS___
         ],
         "enablingConditions": [
           {
-            "paramName": "tagAction",
-            "paramValue": "ecommerceTracking",
+            "paramName": "eventHasEcommerce",
+            "paramValue": true,
             "type": "EQUALS"
           }
-        ]
+        ],
+        "help": "Choose among the following events: setEcommerceView (view product), addEcommerceItem, removeEcommerceItem, trackEcommerceOrder (purchase)"
       },
       {
         "type": "TEXT",
@@ -191,8 +204,8 @@ ___TEMPLATE_PARAMETERS___
         "simpleValueType": true,
         "enablingConditions": [
           {
-            "paramName": "tagAction",
-            "paramValue": "ecommerceTracking",
+            "paramName": "eventHasEcommerce",
+            "paramValue": true,
             "type": "EQUALS"
           }
         ],
@@ -274,7 +287,7 @@ ___TEMPLATE_PARAMETERS___
                   },
                   {
                     "value": "send_beacon",
-                    "displayValue": "Use navigator.sendBeacon"
+                    "displayValue": "Use navigator.sendBeacon (true/false)"
                   }
                 ],
                 "isUnique": true
@@ -364,18 +377,16 @@ _matomo(['setDomains', analyticsDomains.split(',')]);
 // Getting config var fieldsToSet
 var fieldsToSet = {};
 if (data.setConfigVariable.fieldsToSet){
-  data.setConfigVariable.fieldsToSet.forEach(function(element){
-    fieldsToSet[element.field]=element.value;
+  data.setConfigVariable.fieldsToSet.forEach(function(key_value_pair){
+    fieldsToSet[key_value_pair.field]=key_value_pair.value;
   });
 }
 
 // Overriding fieldsToSet if manual override is ticked and fields are being set in the tag
-var newFields = data.fieldsToSet;
-if (newFields){
-  newFields.forEach(function(element){
-    fieldsToSet[element.field] = element.value;
-  });
-}
+var newFields = data.fieldsToSet || [];
+newFields.forEach(function(key_value_pair){
+  fieldsToSet[key_value_pair.field] = key_value_pair.value;
+});
 
 // fieldsToSet now takes into account both config var settings and tag overrides
 log('fieldsToSet:',fieldsToSet);
@@ -394,12 +405,12 @@ if (fieldsToSet){
   }
 
   // Heartbeat timer to accurately track session time (active by default)
-  if (fieldsToSet.countSessionsPrecisely != 'false') {
+  if (fieldsToSet.countSessionsPrecisely && fieldsToSet.countSessionsPrecisely != 'false') {
     _matomo(['enableHeartBeatTimer', 30]);
   }
 
   // Content tracking - track all impressions or only visible impressions
-  if (fieldsToSet.enableContentTracking == 'true') {
+  if (fieldsToSet.enableContentTracking && fieldsToSet.enableContentTracking == 'true') {
     if (data.contentTrackingOptions === "trackAllContentImpressions") {
       _matomo(["trackAllContentImpressions"]);
     } else if (data.contentTrackingOptions === "trackVisibleContentImpressions") {
@@ -408,7 +419,7 @@ if (fieldsToSet){
   }
   
   // Use navigator.send_beacon() if specified
-  if (fieldsToSet.send_beacon){
+  if (fieldsToSet.send_beacon && fieldsToSet.send_beacon.toLowerCase()=='true'){
     _matomo(["alwaysUseSendBeacon"]);
   } else {
     _matomo(["disableAlwaysUseSendBeacon"]);
@@ -425,7 +436,7 @@ if (fieldsToSet){
   if(fieldsToSet.page_referrer) _matomo(['setReferrerUrl', fieldsToSet.page_referrer]); 
 }
 
-// Option to disable tracking cookies
+// Option to disable tracking cookies (only avaiable in config variable)
 if (data.setConfigVariable.cookieConsent == "disableCookies") {
   _matomo(['disableCookies']);
   log('disable Matomo Analytics Cookie.');
@@ -476,7 +487,7 @@ if (data.enableJSErrorTracking == true) {
 
 // ----------------------------- HIT TRACKING -----------------------------
 
-if (data.tagAction == 'ecommerceTracking') { // ECOMMERCE tracking
+if (data.eventHasEcommerce) { // ECOMMERCE tracking
   
   // Declaring Ecommerce variables
   let ecommObject = data.ecommObj;
@@ -528,21 +539,34 @@ if (data.tagAction == 'ecommerceTracking') { // ECOMMERCE tracking
   
   log('Matomo Analytics ecommerceTracking Event fired.');
   
-} else if (data.tagAction == 'eventTracking') { // EVENT tracking
+}
+
+if (data.isGoal) { // GOAL tracking
   
-  let eventCategory = data.eventCategory;
-  let eventAction = data.eventAction;
-  let eventName = data.eventName;
-  let eventValue = data.eventValue;
-  _matomo(['trackEvent', eventCategory, eventAction, eventName, eventValue]);
-  log('Matomo Analytics Event fired.');
+  let goalRevenue = makeNumber(data.goalRevenue) || makeNumber(data.eventValue) || 0.0;
   
-} else if (data.tagAction == 'goalTracking') { // GOAL tracking
-  
-  let goalId = data.goalId;
-  let goalRevenue = data.goalRevenue;
-  _matomo(['trackGoal', goalId, goalRevenue]);
+  if (goalRevenue==0.0 && data.eventHasEcommerce && data.ecommerceTrackingCategory!='removeEcommerceItem'){ 
+    // Inherit the goal value from ecommerce object
+    data.ecommObj.items.forEach(function(prod){
+      goalRevenue += prod.price || 0.0;
+    });
+  } 
+  _matomo(['trackGoal', data.goalId, goalRevenue]);
   log('Matomo Analytics Goal Tracking fired.');
+}
+
+if (data.tagAction == 'eventTracking') { // EVENT tracking
+  
+  let eventValue = makeNumber(data.eventValue) || makeNumber(data.goalRevenue) || 0.0;
+  if (eventValue==0.0 && data.eventHasEcommerce && data.ecommerceTrackingCategory!='removeEcommerceItem'){ 
+    // Inherit the event value from ecommerce object
+    data.ecommObj.items.forEach(function(prod){
+      eventValue += prod.price || 0.0;
+    });
+  }
+  
+  _matomo(['trackEvent', data.eventCategory, data.eventAction, data.eventName, eventValue]);
+  log('Matomo Analytics Event fired.');
   
 } else if (data.tagAction == 'trackPageview') { // PAGEVIEW tracking
   
