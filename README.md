@@ -15,4 +15,5 @@
 * the tag and variable are compatible with Google Consent API
 * the tag and variable can also be adapted to any type of cookie system
 * it is possible to manually set page title or url
+* compatible with custom metrics and dimensions
 * compatible with navigator.sendBeacon()

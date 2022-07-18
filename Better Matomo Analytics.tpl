@@ -313,6 +313,100 @@ ___TEMPLATE_PARAMETERS___
             "type": "EQUALS"
           }
         ]
+      },
+      {
+        "type": "GROUP",
+        "name": "customDimensions",
+        "displayName": "Custom dimensions",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "customDimensionsPairs",
+            "displayName": "",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Custom dimensions\u0027 index",
+                "name": "cdIndex",
+                "type": "TEXT",
+                "valueHint": "Insert the index number",
+                "isUnique": true,
+                "valueValidators": [
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ]
+              },
+              {
+                "defaultValue": "",
+                "displayName": "Value",
+                "name": "value",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ],
+                "valueHint": "Insert custom dimension\u0027s value"
+              }
+            ]
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ]
+      },
+      {
+        "type": "GROUP",
+        "name": "customMetrics",
+        "displayName": "Custom metrics",
+        "groupStyle": "ZIPPY_CLOSED",
+        "subParams": [
+          {
+            "type": "SIMPLE_TABLE",
+            "name": "customMetricsPairs",
+            "displayName": "",
+            "simpleTableColumns": [
+              {
+                "defaultValue": "",
+                "displayName": "Custom metrics\u0027 index",
+                "name": "cmIndex",
+                "type": "TEXT",
+                "valueHint": "Insert the index number",
+                "isUnique": true,
+                "valueValidators": [
+                  {
+                    "type": "POSITIVE_NUMBER"
+                  }
+                ]
+              },
+              {
+                "defaultValue": "",
+                "displayName": "Value",
+                "name": "value",
+                "type": "TEXT",
+                "valueValidators": [
+                  {
+                    "type": "NON_EMPTY"
+                  }
+                ],
+                "valueHint": "Insert custom dimension\u0027s value"
+              }
+            ]
+          }
+        ],
+        "enablingConditions": [
+          {
+            "paramName": "setManualOverride",
+            "paramValue": true,
+            "type": "EQUALS"
+          }
+        ]
       }
     ]
   }
@@ -435,6 +529,34 @@ if (fieldsToSet){
   // Overriding the page_referrer
   if(fieldsToSet.page_referrer) _matomo(['setReferrerUrl', fieldsToSet.page_referrer]); 
 }
+
+
+// Getting config var custom dimensions
+if (data.setConfigVariable.customDimensions.customDimensions){
+  data.setConfigVariable.customDimensions.customDimensions.forEach(function(key_value_pair){
+   _matomo(['setCustomDimension',key_value_pair.value.cdIndex,key_value_pair.value]);
+  });
+}
+
+// Overriding custom dimensions if manual override is ticked and fields are being set in the tag
+var newCds = data.customDimensions.customDimensions || [];
+newCds.forEach(function(key_value_pair){
+  _matomo(['setCustomDimension',key_value_pair.value.cdIndex,key_value_pair.value]);
+});
+
+// Getting config var custom metrics
+if (data.setConfigVariable.customMetrics.customMetrics){
+  data.setConfigVariable.customMetrics.customMetrics.forEach(function(key_value_pair){
+   _matomo(['setCustomMetric',key_value_pair.cdIndex,key_value_pair.value]);
+  });
+}
+
+// Overriding custom metrics if manual override is ticked and fields are being set in the tag
+var newCms = data.customMetrics.customMetrics || [];
+newCms.forEach(function(key_value_pair){
+  _matomo(['setCustomMetric',key_value_pair.cmIndex,key_value_pair.value]);
+});
+  
 
 // Option to disable tracking cookies (only avaiable in config variable)
 if (data.setConfigVariable.cookieConsent == "disableCookies") {
@@ -603,7 +725,7 @@ ___WEB_PERMISSIONS___
           "key": "environments",
           "value": {
             "type": 1,
-            "string": "debug"
+            "string": "all"
           }
         }
       ]

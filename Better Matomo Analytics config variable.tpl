@@ -6,7 +6,7 @@
   "version": 1,
   "securityGroups": [],
   "displayName": "Better Matomo Analytics config variable",
-  "description": "Configuration variables to carry over several settings to every tag that uses it.",
+  "description": "Configuration variable for Matomo Analytics tags to carry over several settings to every tag that uses it.",
   "containerContexts": [
     "WEB"
   ]
@@ -71,56 +71,90 @@ ___TEMPLATE_PARAMETERS___
   },
   {
     "type": "GROUP",
+    "name": "customDimensions",
+    "displayName": "Custom dimensions",
+    "groupStyle": "ZIPPY_CLOSED",
+    "subParams": [
+      {
+        "type": "SIMPLE_TABLE",
+        "name": "customDimensionsPairs",
+        "displayName": "",
+        "simpleTableColumns": [
+          {
+            "defaultValue": "",
+            "displayName": "Custom dimensions\u0027 index",
+            "name": "cdIndex",
+            "type": "TEXT",
+            "valueHint": "Insert the index number",
+            "isUnique": true,
+            "valueValidators": [
+              {
+                "type": "POSITIVE_NUMBER"
+              }
+            ]
+          },
+          {
+            "defaultValue": "",
+            "displayName": "Value",
+            "name": "value",
+            "type": "TEXT",
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "valueHint": "Insert custom dimension\u0027s value"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "GROUP",
+    "name": "customMetrics",
+    "displayName": "Custom metrics",
+    "groupStyle": "ZIPPY_CLOSED",
+    "subParams": [
+      {
+        "type": "SIMPLE_TABLE",
+        "name": "customMetricsPairs",
+        "displayName": "",
+        "simpleTableColumns": [
+          {
+            "defaultValue": "",
+            "displayName": "Custom metrics\u0027 index",
+            "name": "cmIndex",
+            "type": "TEXT",
+            "valueHint": "Insert the index number",
+            "isUnique": true,
+            "valueValidators": [
+              {
+                "type": "POSITIVE_NUMBER"
+              }
+            ]
+          },
+          {
+            "defaultValue": "",
+            "displayName": "Value",
+            "name": "value",
+            "type": "TEXT",
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              }
+            ],
+            "valueHint": "Insert custom dimension\u0027s value"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "GROUP",
     "name": "dataCollectionSettings",
     "displayName": "Data collection",
     "groupStyle": "ZIPPY_OPEN",
     "subParams": [
-      {
-        "type": "CHECKBOX",
-        "name": "enableLinkTracking",
-        "checkboxText": "Outlinks and downloads",
-        "simpleValueType": true,
-        "defaultValue": false,
-        "help": "If turned on, you\u0027ll count outlinks and downloads. Outlinks are links that take the visitor outside your website. Downloads are links to all kind of files on your website. You\u0027ll see collected data under Analytics \u003e Reports \u003e Outlinks or Analytics \u003e Reports \u003e Downloads."
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "enableContentTracking",
-        "checkboxText": "Interactions with popups and content",
-        "simpleValueType": true,
-        "help": "If turned on, you\u0027ll count times when people see and interact with your popup or content. Impressions and interactions are counted for: (1) popups added under Tag Manager \u003e Tags \u003e Add new tag \u003e Custom popup, (2) content added under Tag Manager \u003e Tags \u003e Add new tag \u003e Custom content, (3) any page content you tag in your website\u0027s code.  You\u0027ll see collected data under Analytics \u003e Reports \u003e Content performance.",
-        "subParams": [
-          {
-            "type": "RADIO",
-            "name": "contentTrackingOptions",
-            "radioItems": [
-              {
-                "value": "trackAllContentImpressions",
-                "displayValue": "Content loads on the page"
-              },
-              {
-                "value": "trackVisibleContentImpressions",
-                "displayValue": "Visitor sees the content"
-              }
-            ],
-            "simpleValueType": true,
-            "enablingConditions": [
-              {
-                "paramName": "enableContentTracking",
-                "paramValue": true,
-                "type": "EQUALS"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "CHECKBOX",
-        "name": "countSessionsPrecisely",
-        "checkboxText": "Count session time precisely",
-        "simpleValueType": true,
-        "help": "If turned on, you’ll measure the end of a session more accurately. Session time is the period between opening the first page and closing the last one, but it’s hard to know exactly when a visitor closes the last page. This option will send ping requests to check if a visitor is still on the last page."
-      },
       {
         "type": "SIMPLE_TABLE",
         "name": "fieldsToSet",
