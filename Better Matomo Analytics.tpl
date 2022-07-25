@@ -360,53 +360,6 @@ ___TEMPLATE_PARAMETERS___
             "type": "EQUALS"
           }
         ]
-      },
-      {
-        "type": "GROUP",
-        "name": "customMetrics",
-        "displayName": "Custom metrics",
-        "groupStyle": "ZIPPY_CLOSED",
-        "subParams": [
-          {
-            "type": "SIMPLE_TABLE",
-            "name": "customMetricsPairs",
-            "displayName": "",
-            "simpleTableColumns": [
-              {
-                "defaultValue": "",
-                "displayName": "Custom metrics\u0027 index",
-                "name": "cmIndex",
-                "type": "TEXT",
-                "valueHint": "Insert the index number",
-                "isUnique": true,
-                "valueValidators": [
-                  {
-                    "type": "POSITIVE_NUMBER"
-                  }
-                ]
-              },
-              {
-                "defaultValue": "",
-                "displayName": "Value",
-                "name": "value",
-                "type": "TEXT",
-                "valueValidators": [
-                  {
-                    "type": "NON_EMPTY"
-                  }
-                ],
-                "valueHint": "Insert custom dimension\u0027s value"
-              }
-            ]
-          }
-        ],
-        "enablingConditions": [
-          {
-            "paramName": "setManualOverride",
-            "paramValue": true,
-            "type": "EQUALS"
-          }
-        ]
       }
     ]
   }
@@ -532,29 +485,16 @@ if (fieldsToSet){
 
 
 // Getting config var custom dimensions
-if (data.setConfigVariable.customDimensions.customDimensions){
-  data.setConfigVariable.customDimensions.customDimensions.forEach(function(key_value_pair){
-   _matomo(['setCustomDimension',key_value_pair.value.cdIndex,key_value_pair.value]);
+if (typeof(data.setConfigVariable.customDimensionsPairs)!='undefined'){
+  data.setConfigVariable.customDimensionsPairs.forEach(function(key_value_pair){
+   _matomo(['setCustomDimension',key_value_pair.cdIndex,key_value_pair.value]);
   });
 }
 
 // Overriding custom dimensions if manual override is ticked and fields are being set in the tag
-var newCds = data.customDimensions.customDimensions || [];
+var newCds = data.customDimensionsPairs || [];
 newCds.forEach(function(key_value_pair){
-  _matomo(['setCustomDimension',key_value_pair.value.cdIndex,key_value_pair.value]);
-});
-
-// Getting config var custom metrics
-if (data.setConfigVariable.customMetrics.customMetrics){
-  data.setConfigVariable.customMetrics.customMetrics.forEach(function(key_value_pair){
-   _matomo(['setCustomMetric',key_value_pair.cdIndex,key_value_pair.value]);
-  });
-}
-
-// Overriding custom metrics if manual override is ticked and fields are being set in the tag
-var newCms = data.customMetrics.customMetrics || [];
-newCms.forEach(function(key_value_pair){
-  _matomo(['setCustomMetric',key_value_pair.cmIndex,key_value_pair.value]);
+  _matomo(['setCustomDimension',key_value_pair.cdIndex,key_value_pair.value]);
 });
   
 

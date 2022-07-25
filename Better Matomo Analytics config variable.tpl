@@ -111,46 +111,6 @@ ___TEMPLATE_PARAMETERS___
   },
   {
     "type": "GROUP",
-    "name": "customMetrics",
-    "displayName": "Custom metrics",
-    "groupStyle": "ZIPPY_CLOSED",
-    "subParams": [
-      {
-        "type": "SIMPLE_TABLE",
-        "name": "customMetricsPairs",
-        "displayName": "",
-        "simpleTableColumns": [
-          {
-            "defaultValue": "",
-            "displayName": "Custom metrics\u0027 index",
-            "name": "cmIndex",
-            "type": "TEXT",
-            "valueHint": "Insert the index number",
-            "isUnique": true,
-            "valueValidators": [
-              {
-                "type": "POSITIVE_NUMBER"
-              }
-            ]
-          },
-          {
-            "defaultValue": "",
-            "displayName": "Value",
-            "name": "value",
-            "type": "TEXT",
-            "valueValidators": [
-              {
-                "type": "NON_EMPTY"
-              }
-            ],
-            "valueHint": "Insert custom dimension\u0027s value"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "GROUP",
     "name": "dataCollectionSettings",
     "displayName": "Data collection",
     "groupStyle": "ZIPPY_OPEN",
@@ -479,10 +439,13 @@ ___WEB_PERMISSIONS___
           "key": "environments",
           "value": {
             "type": 1,
-            "string": "debug"
+            "string": "all"
           }
         }
       ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
     },
     "isRequired": true
   }
