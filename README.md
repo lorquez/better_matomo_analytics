@@ -1,10 +1,12 @@
 # better_matomo_analytics
- *GTM template for Matomo Analytics*
- This template serves the purpose of making it easier to implement Matomo Analytics for people without programming skill or that simply want to do it in a more agile way. It comes with a tag and a config variable templates. The config variable tamplates is needed to easily share configuration among several tags, like it happens in Universal Analytics tagging, but unlike UA, this config variable is mandatory, for Matomo tags will not work without it.
+*GTM template for Matomo Analytics*
+This template serves the purpose of making it easier to implement Matomo Analytics for people without programming skill or that simply want to do it in a more agile way. It comes with a tag and a config variable templates. The config variable tamplates is needed to easily share configuration settings among several tags, like it happens in Universal Analytics, but unlike UA, this config variable is *mandatory*, for Matomo tags will not work without it.
 
-**still not completed**
 
-**Main characteristics**:
+# Installation
+The templates are not yet available in the community templates. To install this templates, simply download them directly from github and import them in a GTM container.
+
+# Main characteristics
 * the template has a tag and a config variable
 * it works like Universal Analytics template
 * ecommerce is being parsed from a UA or GA4 ecommerce object
