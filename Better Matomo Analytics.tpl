@@ -496,7 +496,6 @@ var newCds = data.customDimensionsPairs || [];
 newCds.forEach(function(key_value_pair){
   _matomo(['setCustomDimension',key_value_pair.cdIndex,key_value_pair.value]);
 });
-  
 
 // Option to disable tracking cookies (only avaiable in config variable)
 if (data.setConfigVariable.cookieConsent == "disableCookies") {
@@ -510,13 +509,31 @@ if (data.setConfigVariable.cookieConsent == "disableCookies") {
   // Set cookie domain
   if (fieldsToSet && fieldsToSet.cookieDomain) {
     _matomo(['setCookieDomain', fieldsToSet.cookieDomain]);
-  } 
+  }
   
-  // If the user granted tracking consent, set complete tracking
-  if ((data.setConfigVariable.cookieConsent=='useGoogleConsentAPI' && isConsentGranted('analytics_storage')) || (data.setConfigVariable.cookieConsent=='useCookieConsentGiven' && data.setConfigVariable.CookieConsentGiven=='true')){
+  // Handling consent using Google Consent API
+  if (data.setConfigVariable.cookieConsent == 'useGoogleConsentAPI'){
+    // Checking if we already have consent
+    if (isConsentGranted('analytics_storage')){
+      _matomo(['rememberCookieConsentGiven']);
+      log('rememberCookieConsentGiven.');
+    }
+    // Handling potential consent changes
+    addConsentListener('analytics_storage',(consentType, granted) => {
+      if (consentType === 'analytics_storage' && granted) {
+        _matomo(['rememberCookieConsentGiven']);
+        log('rememberCookieConsentGiven.');
+      }
+      if (consentType === 'analytics_storage' && !granted) {
+        _matomo(['forgetCookieConsentGiven']);
+        log('forgetCookieConsentGiven');
+      }
+    });
+  } else if (data.setConfigVariable.cookieConsent=='useCookieConsentGiven' && data.setConfigVariable.CookieConsentGiven=='true'){
+    // Handling consent using a variable
     _matomo(['setCookieConsentGiven']);
   }
-
+  
   // Set secure cookie
   if (data.setConfigVariable.setSecureCookie == true) {
     _matomo(['setSecureCookie', 1]);
